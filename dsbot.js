@@ -33,17 +33,22 @@ bot.on("message", msg => {
         try {
             let args = msg.content.substring(1).split(" ");
             let command = args[0].toLowerCase();
+            let era = cards.eraDeterminer(command);
+            if (era) {
+                command = args[1].toLowerCase();
+                args.shift();
+            }
             log.logCommand(msg);
             if (["name"].indexOf(command) > -1) {
-                cardNameCommand(args, msg);
+                cardNameCommand(args, era, msg);
             } else if (["random"].indexOf(command) > -1) {
-                randomCard(msg);
+                randomCard(era, msg);
             } else if (["search"].indexOf(command) > -1) {
-                cardSearchCommand(args, msg);
+                cardSearchCommand(args, era, msg);
             } else if (["link"].indexOf(command) > -1) {
-                cardSearchCommand(args, msg, display.displayLink);
+                cardSearchCommand(args, era, msg, display.displayLink);
             } else if (["img"].indexOf(command) > -1) {
-                cardSearchCommand(args, msg, display.displayImg);
+                cardSearchCommand(args, era, msg, display.displayImg);
             } else if (memeDict.hasOwnProperty(command)) {
                 meme(memeDict[command], msg);
             } else if (["help", "man"].indexOf(command) > -1) {
@@ -56,16 +61,16 @@ bot.on("message", msg => {
                 } else if (command == "clean") {
                     cleanChannel(msg, msg.channel);
                 } else {
-                    cardSearchCommand(["card-search"].concat(args), msg);
+                    cardSearchCommand(["search"].concat(args), era, msg);
                 }
             } else if (isModEquiv(msg.member)) {
                 if (command == "clean") {
                     cleanChannel(msg, msg.channel);
                 } else {
-                    cardSearchCommand(["card-search"].concat(args), msg);
+                    cardSearchCommand(["search"].concat(args), era, msg);
                 }
             } else {
-                cardSearchCommand(["card-search"].concat(args), msg);
+                cardSearchCommand(["search"].concat(args), era, msg);
             }
         } catch (err) {
             log.log(`Couldn't process ${msg.content} on ${(msg.guild) ? msg.guild.name : "PM"} by ${msg.author.name}`);
@@ -200,46 +205,47 @@ function cleanChannel(msg, channel) {
 
 //CARD COMMANDS
 
-function cardNameCommand(args, msg) {
+function cardNameCommand(args, era, msg) {
     let subname = args.slice(1).join(" ").toLowerCase();
-    let cardNames = cards.cardsList.filter(function (name) {
+    let cardNames = cards.getCardList(era).filter(function (name) {
         return name.includes(subname);
     });
-    outputCards(msg, cardNames, display.displayFlair);
+    outputCards(msg, era, cardNames, display.displayFlair);
 }
 
 
-function cardSearchCommand(args, msg, displayFunc = display.displayFlair) {
-    let cardNames = cards.cardsList; //card names are stored as lower
+function cardSearchCommand(args, era, msg, displayFunc = display.displayFlair) {
+    let cardNames = cards.getCardList(era);
     givenSearch = args.slice(1).join(" ").toLowerCase();
     for (var ci = 0; ci < cardNames.length; ci++) {
         if (cardNames[ci] == givenSearch) {
-            outputCards(msg, [cardNames[ci]], displayFunc);
+            outputCards(msg, era, [cardNames[ci]], displayFunc);
             return;
         }
     }
     for (var i = 1; i < args.length; i++) {
         cardNames = cardNames.filter(function (cardName) {
-            return cards.doesTermMatchCard(args[i], cardName);
+            return cards.doesTermMatchCard(args[i], era, cardName);
         });
     }
-    outputCards(msg, cardNames, displayFunc);
+    outputCards(msg, era, cardNames, displayFunc);
 }
 
-function randomCard(msg) {
-    outputCards(msg, [cards.cardsList[cards.cardsList.length * Math.random() << 0]], display.displayFlair);
+function randomCard(era, msg) {
+    let cardList = cards.getCardList(era);
+    outputCards(msg, era, [cardList[cardList.length * Math.random() << 0]], display.displayFlair);
 }
 
-function outputCards(msg, cardNames, displayFunc) {
+function outputCards(msg, era, cardNames, displayFunc) {
     if (cardNames.length == 1) {
-        sendEmbed(msg.channel, displayFunc(cardNames[0]), undefined, "green");
+        sendEmbed(msg.channel, displayFunc(cardNames[0], era), undefined, "green");
         //TODO
     } else if (cardNames.length > 1 && cardNames.length <= 32) {
         sendMessage(
             msg.channel,
             "I found these objects: " +
             cardNames.map(function (cardName) {
-                return cards.cardData[cardName].name;
+                return cards.getCard(cardName, era).name;
             }).join(", ")
         );
     } else if (cardNames.length > 32) {
@@ -259,6 +265,7 @@ function outputCards(msg, cardNames, displayFunc) {
 
 function helpCommand(msg) {
     msg.author.sendMessage(
+        "Prefix any command with ds3 (or ds2,ds1,bb) to limit searches to that game.\n\n" +
         "__-name__ _name_\n" +
         "Shows the item description for the query that matches the name\n" +
         "__-search__ _term1 term2_...\n" +
@@ -266,7 +273,7 @@ function helpCommand(msg) {
         "__-img__ _term1 term2_...\n" +
         "Shows the image for the query that matches the terms\n" +
         "__-link__ _term1 term2_...\n" +
-        "Links to fextralife query that matches the terms\n" +
+        "Links to the wiki for the query that matches the terms\n" +
         "__-random__\n" +
         "Gets a random Dark Souls thing\n" +
         "__-clean__\n" +

@@ -7,27 +7,28 @@ module.exports = {};
 
 //all display functions return embed objects.
 
-function displayImg(cardName) {
-    console.log(cards.cardData[cardName].img);
-    return {image: {url:cards.cardData[cardName].img}};
+function displayImg(cardName, era) {
+    let card = cards.getCard(cardName, era);
+    console.log(card.img);
+    return {image: {url:card.img}};
 }
 module.exports.displayImg = displayImg;
 
-function displayFlair(cardName) {
-    let card = cards.cardData[cardName];
+function displayFlair(cardName, era) {
+    let card = cards.getCard(cardName, era);
     formattedText = `*${card.flair.trim()}*`;
     return {
-        title: card.name,
+        title: `${card.name} (${card.era})`,
         description: `*${card.flair}*`,
         thumbnail: {url: card.img}
     };
 }
 module.exports.displayFlair = displayFlair;
 
-function displayLink(cardName) {
-    let card = cards.cardData[cardName];
+function displayLink(cardName, era) {
+    let card = cards.getCard(cardName, era);
     return {
-        title: card.name,
+        title: `${card.name} (${card.era})`,
         description: card.link,
         thumbnail: {url: card.img}
     };
