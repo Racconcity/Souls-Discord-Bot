@@ -86,6 +86,8 @@ function isSuperMod(member) {
 }
 
 var memeDict = {
+    'praise':'ds/praisehd.png',
+    'chaoszwei':'ds/chaoszwei.jpg'
 };
 
 bot.on('ready', () => {
