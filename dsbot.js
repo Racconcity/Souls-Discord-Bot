@@ -266,7 +266,7 @@ function outputCards(msg, era, cardNames, displayFunc) {
 //LINK COMMANDS
 
 function helpCommand(msg) {
-    msg.author.sendMessage(
+    msg.author.send(
         "Prefix any command with ds3 (or ds2,ds1,bb) to limit searches to that game.\n\n" +
         "__-name__ _name_\n" +
         "Shows the item description for the query that matches the name\n" +
