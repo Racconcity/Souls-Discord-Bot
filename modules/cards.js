@@ -66,7 +66,10 @@ function formatCardData(era, cards) {
 function buildCardData(callback) {
     ["ds1", "ds2", "ds3", "bb"].forEach(function(x) {
         var body = fs.readFileSync(x + ".json").toString();
-        var cards = JSON.parse(body.replace(/\<br\>/g, "\\n"));
+        var cards = JSON.parse(
+            body.replace(/(<br>){3,}/g, "<br><br>")
+                .replace(/<br>/g, "\\n")
+        );
         formatCardData(x.toUpperCase(), cards);
     });
     cardsListF = Object.keys(cardDataF);
