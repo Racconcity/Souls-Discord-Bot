@@ -105,8 +105,8 @@ bot.on('ready', () => {
     });
     setTimeout(function() {
         console.log("Setting icon");
-        bot.user.setAvatar('icons/icon2.jpg');
-        bot.user.setGame("Dark Souls IIII");
+        bot.user.setAvatar('icons/icon2.jpg').catch(log.log);
+        bot.user.setGame("Dark Souls IIII").catch(log.log);
     }, 5000);
 });
 bot.on("guildCreate", (guild) => {
