@@ -73,7 +73,7 @@ bot.on("message", msg => {
                 cardSearchCommand(["search"].concat(args), era, msg);
             }
         } catch (err) {
-            log.log(`Couldn't process ${msg.content} on ${(msg.guild) ? msg.guild.name : "PM"} by ${msg.author.name}`);
+            log.log(`Couldn't process ${msg.content} on ${(msg.guild) ? msg.guild.name : "PM"} by ${msg.author.username}`);
         }
     }
 });
