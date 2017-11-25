@@ -73,7 +73,7 @@ bot.on("message", msg => {
                 cardSearchCommand(["search"].concat(args), era, msg);
             }
         } catch (err) {
-            log.log(`Couldn't process ${msg.content} on ${(msg.guild) ? msg.guild.name : "PM"} by ${msg.author.name}`);
+            log.log(`Couldn't process ${msg.content} on ${(msg.guild) ? msg.guild.name : "PM"} by ${msg.author.username}`);
         }
     }
 });
@@ -105,8 +105,8 @@ bot.on('ready', () => {
     });
     setTimeout(function() {
         console.log("Setting icon");
-        bot.user.setAvatar('icons/icon2.jpg');
-        bot.user.setGame("Dark Souls IIII");
+        bot.user.setAvatar('icons/icon2.jpg').catch(log.log);
+        bot.user.setGame("Dark Souls IIII").catch(log.log);
     }, 5000);
 });
 bot.on("guildCreate", (guild) => {
@@ -266,7 +266,7 @@ function outputCards(msg, era, cardNames, displayFunc) {
 //LINK COMMANDS
 
 function helpCommand(msg) {
-    msg.author.sendMessage(
+    msg.author.send(
         "Prefix any command with ds3 (or ds2,ds1,bb) to limit searches to that game.\n\n" +
         "__-name__ _name_\n" +
         "Shows the item description for the query that matches the name\n" +
