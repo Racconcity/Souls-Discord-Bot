@@ -64,12 +64,18 @@ function formatCardData(era, cards) {
 }
 
 function buildCardData(callback) {
+    var override = JSON.parse(fs.readFileSync("override.json").toString().replace(/<br>/g, "\\n"));
     ["ds1", "ds2", "ds3", "bb"].forEach(function(x) {
         var body = fs.readFileSync(x + ".json").toString();
         var cards = JSON.parse(
             body.replace(/(<br>){3,}/g, "<br><br>")
                 .replace(/<br>/g, "\\n")
         );
+        for (var key in override[x]) {
+            if (override[x].hasOwnProperty(key)) {
+                cards[key] = override[x][key];
+            }
+        }
         formatCardData(x.toUpperCase(), cards);
     });
     cardsListF = Object.keys(cardDataF);
