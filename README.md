@@ -32,5 +32,8 @@ You can also request the image of the search object, or a link to wikia for the 
 
 Finally, you can get a random thing using `-random`. You can use `-ds1 random` to get game-specific random things.
 
+There are two administrative commands: `-clean` and `-destroy`. Clean removes the last 50 bot messages, and is granted to server moderators and bot owners. Destroy stops the bot entirely (on all servers), and is only granted to bot owners.
+
+---
 
 The bot reflects data from http://darksouls.wikia.com and http://bloodborne.wikia.com , which has been cached in the JSON files for speed of access.
