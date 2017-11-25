@@ -69,6 +69,7 @@ function buildCardData(callback) {
         var body = fs.readFileSync(x + ".json").toString();
         var cards = JSON.parse(
             body.replace(/(<br>){3,}/g, "<br><br>")
+                .replace(/(<br>)+\"/g, '"')
                 .replace(/<br>/g, "\\n")
         );
         for (var key in override[x]) {
