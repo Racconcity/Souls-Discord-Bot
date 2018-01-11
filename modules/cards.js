@@ -74,7 +74,11 @@ function buildCardData(callback) {
         );
         for (var key in override[x]) {
             if (override[x].hasOwnProperty(key)) {
-                cards[key] = override[x][key];
+                if (override[x][key].hasOwnProperty("$del")) {
+                    delete cards[key];
+                } else {
+                    cards[key] = override[x][key];
+                }
             }
         }
         formatCardData(x.toUpperCase(), cards);

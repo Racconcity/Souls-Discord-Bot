@@ -9,7 +9,6 @@ module.exports = {};
 
 function displayImg(cardName, era) {
     let card = cards.getCard(cardName, era);
-    console.log(card.img);
     return {image: {url:card.img}};
 }
 module.exports.displayImg = displayImg;
